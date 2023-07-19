@@ -1,0 +1,183 @@
+from distutils.command import clean
+from pickle import FALSE
+import random
+from unittest import result
+
+Cards=[2,3,4,5,6,7,8,9,10,"a","j","q","k"]
+dealer_carts=[]
+Checkplayer=[0,0]
+Checkdealer=[0,0]
+player_carts=[]
+player_money=0
+result=0
+
+def Deal():
+    print ("Select amount of deal")
+    print ("100")
+    print ("250")
+    print ("500")
+    print ("1000")
+    x=int(input())
+    return x
+
+def get_card (hand):
+    hand.append(random.choice(Cards))
+    return hand
+
+def check (hand,check):
+    
+    check[0]=0
+    check[1]=0
+
+    for x in hand:
+        if x=="j" or x=="q" or x=="k":
+            check[0] = check[0] + 10
+            check[1] = check[1] + 10
+        elif x=="a":
+            check[0]=check[0] +1
+            check[1]=check[1] +11
+        else:
+            check[0] = check[0] + x
+            check[1] = check[1] + x
+
+    return check
+
+def play(player_carts,dealer_carts,player_money):
+
+    print("player money is :{}".format(player_money))
+    dealer_carts = get_card(dealer_carts)  
+    dealer_carts = get_card(dealer_carts)   
+
+    player_carts = get_card(player_carts)  
+    player_carts = get_card(player_carts)  
+
+    print("Dealer hand")
+    print(dealer_carts[1])
+
+    print ("player hand")
+    print (player_carts[0],player_carts[1])
+
+    pass
+
+def dealplayer(player_carts,dealer_carts,Checkplayer,Checkdealer):
+    Checkplayer = check(player_carts,Checkplayer)
+    Checkdealer = check(dealer_carts,Checkdealer)
+    while   (Checkdealer[0]<Checkplayer[0] and Checkdealer[0]<Checkplayer[1]) or (Checkdealer[1]<Checkplayer[0] and Checkdealer[1]<Checkplayer[1]) :
+
+        dealer_carts = get_card(dealer_carts)  
+        Checkdealer = check(dealer_carts,Checkdealer)
+        if (Checkdealer[0]>21 and Checkdealer[1]>21):
+            print("player you won")
+            print("Dealer hand")
+            print(dealer_carts)
+            return 1
+    
+    print("player you lost")
+    print("Dealer hand")
+    print(dealer_carts)   
+    return -1
+
+    pass
+     
+
+
+print("Please enter amount of your money")
+player_money=input()
+int(player_money)
+
+
+while True:
+    deal=Deal()
+    play(player_carts,dealer_carts,player_money)
+
+    print("Select your next move:")
+    print("1. get card")
+    print("2. double")
+    print("3. surrender")
+    print("4. stop")    
+    next_move=input()
+    int(next_move)
+
+    if int(next_move)==1:
+
+        while True:
+            player_carts = get_card(player_carts) 
+            Checkplayer= check(player_carts,Checkplayer)
+
+            if Checkplayer[0]>21 or Checkplayer[1]>21:
+                print ("player you lost")
+                print ("player hand")
+                print (player_carts)
+                player_money = int(player_money) - deal
+                result=-1
+                break;
+
+            if Checkplayer[0]==21 or Checkplayer[1]==21:
+                 print("black jack")
+                 player_money = int(player_money) + deal
+                 result=1
+                 break;
+            print ("player hand")
+            print (player_carts)
+            print("for get another cart enter 1 ,if you dont enter 0")
+            x=int(input())
+            if x ==0:
+                result = dealplayer(player_carts,dealer_carts,Checkplayer,Checkdealer)   
+                if result == 1:
+                 print("player you won")
+                 player_money = int(player_money) + deal
+                else :
+                     print("player you lost")
+                     player_money = int(player_money) - deal
+                break;
+        
+            result = dealplayer(player_carts,dealer_carts,Checkplayer,Checkdealer)   
+            if result == 1:
+             print("player you won")
+             player_money = int(player_money) + deal
+            else :
+             print("player you lost")
+             player_money = int(player_money) - deal
+
+
+    
+           
+        
+    elif int(next_move) ==2:
+         deal = deal * 2
+         result = dealplayer(player_carts,dealer_carts,Checkplayer,Checkdealer)
+         if result==1:
+             player_money = int(player_money) + deal
+         else :
+             player_money = int(player_money) + deal
+               
+
+    elif int(next_move) ==3:
+        player_money= player_money - (deal /2)
+        result=-1
+    else :
+        result = dealplayer(player_carts,dealer_carts,Checkplayer,Checkdealer)
+        if result == 1:
+            print("player you won")
+            player_money = int(player_money) + deal
+        else :
+            print("player you lost")
+            player_money = int(player_money) - deal
+
+        pass
+    
+    if result == 1 or -1 :
+         player_carts.clear()
+         dealer_carts.clear()
+         Checkdealer.clear()
+         Checkplayer.clear()
+         Checkplayer=[0,0]
+         Checkdealer=[0,0]
+         print("player money is :{}".format(player_money))
+         
+   
+   
+
+
+
+    pass
